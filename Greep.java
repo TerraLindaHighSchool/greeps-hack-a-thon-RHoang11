@@ -11,6 +11,7 @@ public class Greep extends Creature
     // Remember: you cannot extend the Greep's memory. So:
     // no additional fields (other than final fields) allowed in this class!
     
+    
     /**
      * Default constructor for testing purposes.
      */
@@ -38,13 +39,19 @@ public class Greep extends Creature
                 dropTomato();
             }
             else {
+                seePaint("red");
                 turnHome();
                 move();
             }
         }
         else {
-            move();
             checkFood();
+            //spit("red");
+        }
+        
+        if (atWater() || isAtEdge())
+        {
+            turn(180);
         }
     }
     
@@ -55,19 +62,36 @@ public class Greep extends Creature
     {
         // check whether there's a tomato pile here
         TomatoPile tomatoes = (TomatoPile) getOneIntersectingObject(TomatoPile.class);
-        if (tomatoes != null) {
+        if (tomatoes != null) 
+        {
             loadTomato();
+            
             // Note: this attempts to load a tomato onto *another* Greep. It won't
             // do anything if we are alone here.
         }
+        else
+        {
+            move();
+            
+        }
     }
-
+    
+    /**
+     * When a greep is on a tomato patch, the greep will call the other greeps to itself
+     * only greeps in a certain area are called.
+     */
+    public void callGreeps()
+    {
+        //int dX = Creature.getX() - getX();
+        //int dY = Creature.getY() - getY();
+        //setRotation((int) (180 * Math.atan2(dY, dX) / Math.PI));
+    }
     /**
      * This method specifies the name of the author (for display on the result board).
      */
     public static String getAuthorName()
     {
-        return "Anonymous";  // write your name here!
+        return "Ryan Hoang";  // write your name here!
     }
 
     /**
@@ -83,4 +107,6 @@ public class Greep extends Creature
             return "greep.png";
         }
     }
+    
+    
 }
