@@ -11,6 +11,10 @@ public class Greep extends Creature
     // Remember: you cannot extend the Greep's memory. So:
     // no additional fields (other than final fields) allowed in this class!
     
+    private boolean goHome = false; 
+    public boolean flag1 = false; 
+    public boolean flag2 = false; 
+    public final int HOW_MANY_STEPS = 4;
     
     /**
      * Default constructor for testing purposes.
@@ -34,14 +38,32 @@ public class Greep extends Creature
     public void act()
     {
         super.act();   // do not delete! leave as first statement in act().
-        if (carryingTomato()) {
+        if (carryingTomato()) 
+        {
+            int remainingSteps = getMemory();
+            if(remainingSteps == 0)
+            {
+                spit("purple");
+                turnHome();
+            }
+            else
+            {
+                remainingSteps--;
+                setMemory(remainingSteps);
+            }
+            
             if (atShip()) {
                 dropTomato();
+                turn(180);
             }
             else {
-                seePaint("red");
-                turnHome();
                 move();
+                goHome = true;
+            }
+            if (atWater() || isAtEdge())
+            {
+                turn(Greenfoot.getRandomNumber(65));
+                setMemory(HOW_MANY_STEPS + Greenfoot.getRandomNumber(HOW_MANY_STEPS));
             }
         }
         else {
@@ -49,10 +71,13 @@ public class Greep extends Creature
             //spit("red");
         }
         
-        if (atWater() || isAtEdge())
+        
+        if(atWater() || isAtEdge())
         {
-            turn(180);
+            turn(Greenfoot.getRandomNumber(60));
+            
         }
+        
     }
     
     /**
@@ -62,9 +87,11 @@ public class Greep extends Creature
     {
         // check whether there's a tomato pile here
         TomatoPile tomatoes = (TomatoPile) getOneIntersectingObject(TomatoPile.class);
+        Greep greeps = (Greep) getOneIntersectingObject(Greep.class);
         if (tomatoes != null) 
         {
             loadTomato();
+            
             
             // Note: this attempts to load a tomato onto *another* Greep. It won't
             // do anything if we are alone here.
@@ -73,7 +100,24 @@ public class Greep extends Creature
         {
             move();
             
+            
         }
+    }
+    
+    public void moveToFlag()
+    {
+        TomatoPile tomatoes = (TomatoPile) getOneIntersectingObject(TomatoPile.class);
+        if (tomatoes != null)
+        {
+            setFlag(1, true);
+            flag1 = true;
+        }
+        if(tomatoes != null && flag1 == true)
+        {
+            setFlag(2, true); 
+            flag2 = true;
+        }
+        
     }
     
     /**
